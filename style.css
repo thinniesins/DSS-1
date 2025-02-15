@@ -9,7 +9,56 @@ header {
     background-color: #67d66a;
     color: white;
     padding: 20px;
+    text-align: center;
 }
+#settings-btn {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+#settings-panel {
+    position: fixed;
+    left: -33%;
+    top: 0;
+    width: 33%;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease;
+    z-index: 1000;
+}
+
+#settings-panel.hidden {
+    left: -33%;
+}
+
+#settings-panel.visible {
+    left: 0;
+}
+
+.settings-content {
+    padding: 20px;
+}
+
+#account-photo img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+#task-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
 #todo-section {
     margin: 20px;
 }
@@ -18,14 +67,33 @@ header {
     padding: 0;
 }
 #task-list li {
-    background-color: #fff;
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ddd;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 10px;
+    background-color: #fff;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
+#task-list li.completed {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.task-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.task-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
 .hidden {
     display: none;
 }

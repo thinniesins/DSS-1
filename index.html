@@ -8,9 +8,30 @@
 </head>
 <body>
     <header>
+        <button id="settings-btn">☰</button>
         <h1>Система Ежедневного превосходства</h1>
         <p>Превзойди себя вчерашнего</p>
     </header>
+
+  <!-- Settings Panel -->
+  <div id="settings-panel" class="hidden">
+    <div class="settings-content">
+        <h2>Настройки</h2>
+        <div id="account-photo">
+            <img src="https://via.placeholder.com/100" alt="Account Photo" id="account-photo-img">
+            <input type="file" id="upload-photo" accept="image/*">
+        </div>
+        <div id="account-name">
+            <input type="text" id="name-input" placeholder="Ваше имя">
+        </div>
+        <div id="daily-reset-time">
+            <label for="reset-time">Время сброса:</label>
+            <input type="time" id="reset-time" value="00:00">
+        </div>
+        <button id="save-settings">Сохранить</button>
+    </div>
+    </div>
+
     <main>
         <div id="auth-buttons">
             <!-- VK Sign-In Button -->
@@ -28,8 +49,14 @@
 
         <div id="todo-section" class="hidden">
             <h2>Ваши задачи</h2>
-            <input type="text" id="task-input" placeholder="Отжаться 20 раз">
-            <button id="add-task-btn">Добавить задачу</button>
+            <div id="task-options">
+                <input type="text" id="task-input" placeholder="Отжаться 20 раз">
+                <select id="task-type">
+                    <option value="one-time">Однократно</option>
+                    <option value="daily">Ежедневно</option>
+                </select>
+                <button id="add-task-btn">Добавить задачу</button>
+            </div>
             <ul id="task-list"></ul>
             <div id="progress-section">
                 <h3>Прогресс: <span id="progress-percent">0%</span></h3>
@@ -107,6 +134,50 @@
             const redirectUri = encodeURIComponent("https://your-actual-domain.com/"); // Update this
             const vkAuthUrl = `https://oauth.vk.com/authorize?client_id=${vkAppId}&display=page&redirect_uri=${redirectUri}&response_type=code&v=5.131`;
             window.location.href = vkAuthUrl; // Redirect to VK OAuth page
+        });
+
+                // Add Task Functionality
+                const taskInput = document.getElementById("task-input");
+        const addTaskBtn = document.getElementById("add-task-btn");
+        const taskList = document.getElementById("task-list");
+
+        // Function to add a task
+        function addTask() {
+            const taskText = taskInput.value.trim();
+            if (taskText !== "") {
+                const li = document.createElement("li");
+                li.textContent = taskText;
+                taskList.appendChild(li);
+                taskInput.value = ""; // Clear the input field
+                updateProgress(); // Update progress
+            }
+        }
+
+        // Add task on button click
+        addTaskBtn.addEventListener("click", addTask);
+
+        // Add task on pressing ENTER key
+        taskInput.addEventListener("keypress", (event) => {
+            if (event.key === "Enter") {
+                addTask();
+            }
+        });
+
+        // Update Progress Function
+        function updateProgress() {
+            const totalTasks = taskList.children.length;
+            const completedTasks = document.querySelectorAll("#task-list li.completed").length;
+            const progressPercent = (completedTasks / totalTasks) * 100 || 0;
+            document.getElementById("progress-percent").textContent = `${progressPercent.toFixed(0)}%`;
+            document.getElementById("progress-bar").value = progressPercent;
+        }
+
+        // Mark task as completed
+        taskList.addEventListener("click", (event) => {
+            if (event.target.tagName === "LI") {
+                event.target.classList.toggle("completed");
+                updateProgress();
+            }
         });
     </script>
 
