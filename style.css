@@ -94,6 +94,22 @@ header {
     font-size: 16px;
 }
 
+#settings-panel {
+    position: fixed;
+    left: -33%;
+    top: 0;
+    width: 33%;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease;
+    z-index: 1000;
+}
+
+#settings-panel.visible {
+    left: 0;
+}
+
 .hidden {
     display: none;
 }

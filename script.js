@@ -105,7 +105,10 @@ function renderTasks() {
         li.innerHTML = `
             <span>${task.text}</span>
             <div class="task-actions">
-                <button onclick="editTask(${index})">✏️</button>
+                <select onchange="updateTaskType(${index}, this.value)">
+                    <option value="one-time" ${task.type === "one-time" ? "selected" : ""}>Однократно</option>
+                    <option value="daily" ${task.type === "daily" ? "selected" : ""}>Ежедневно</option>
+                </select>
                 <button onclick="deleteTask(${index})">🗑️</button>
                 <input type="checkbox" ${task.completed ? "checked" : ""} onchange="toggleTask(${index})">
             </div>
@@ -116,6 +119,13 @@ function renderTasks() {
     updateProgress();
 }
 
+// Update Task Type
+window.updateTaskType = function (index, newType) {
+    tasks[index].type = newType;
+    saveTasks(auth.currentUser.uid, tasks); // Save updated tasks
+    renderTasks();
+};
+
 // Toggle Task Completion
 window.toggleTask = function (index) {
     tasks[index].completed = !tasks[index].completed;
@@ -125,9 +135,11 @@ window.toggleTask = function (index) {
 
 // Delete Task
 window.deleteTask = function (index) {
-    tasks.splice(index, 1);
-    saveTasks(auth.currentUser.uid, tasks); // Save updated tasks
-    renderTasks();
+    if (confirm("Вы уверены, что хотите удалить задачу?")) {
+        tasks.splice(index, 1);
+        saveTasks(auth.currentUser.uid, tasks); // Save updated tasks
+        renderTasks();
+    }
 };
 
 // Edit Task
@@ -176,6 +188,10 @@ function showTodoSection() {
 }
 
 // Settings Panel
+settingsBtn.addEventListener("click", () => {
+    settingsPanel.classList.toggle("visible");
+});
+
 settingsBtn.addEventListener("click", () => {
     settingsPanel.classList.toggle("visible");
 });
