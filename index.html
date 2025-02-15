@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My To-Do List</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to My To-Do List</h1>
+        <p>Stay organized and track your daily progress!</p>
+    </header>
+    <main>
+        <div id="auth-buttons">
+            <button id="signup-btn">Sign Up</button>
+            <button id="login-btn">Log In</button>
+        </div>
+        <div id="todo-section" class="hidden">
+            <h2>Your To-Do List</h2>
+            <input type="text" id="task-input" placeholder="Add a new task">
+            <button id="add-task-btn">Add Task</button>
+            <ul id="task-list"></ul>
+            <div id="progress-section">
+                <h3>Progress: <span id="progress-percent">0%</span></h3>
+                <progress id="progress-bar" value="0" max="100"></progress>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyCN-TMHJqEjJ2s-2AR3oWkRoXseWCiqeYk",
+          authDomain: "dss-website-be534.firebaseapp.com",
+          projectId: "dss-website-be534",
+          storageBucket: "dss-website-be534.firebasestorage.app",
+          messagingSenderId: "521888020881",
+          appId: "1:521888020881:web:a2ff05a054b039b6740230",
+          measurementId: "G-YEMTJV5R0T"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+      </script>
+</body>
+</html>
