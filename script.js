@@ -112,8 +112,8 @@ function renderTasks() {
                     <option value="one-time" ${task.type === "one-time" ? "selected" : ""}>Однократно</option>
                     <option value="daily" ${task.type === "daily" ? "selected" : ""}>Ежедневно</option>
                 </select>
+                <button onclick="deleteTask(${index})">❌</button>
                 <button onclick="editTask(${index})">✏️</button>
-                <button onclick="deleteTask(${index})">🗑️</button>
                 <input type="checkbox" ${task.completed ? "checked" : ""} onchange="toggleTask(${index})">
             </div>
         `;
@@ -203,6 +203,11 @@ function showTodoSection() {
 // Settings Panel
 settingsBtn.addEventListener("click", () => {
     settingsPanel.classList.toggle("visible");
+});
+
+const closeSettingsBtn = document.getElementById("close-settings-btn");
+closeSettingsBtn.addEventListener("click", () => {
+    settingsPanel.classList.remove("visible");
 });
 
 // Save Settings
