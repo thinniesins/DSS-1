@@ -40,15 +40,15 @@
 
     <script type="module">
         // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
         import { 
-            initializeApp, 
             getAuth, 
             signInWithPopup, 
             GoogleAuthProvider, 
             onAuthStateChanged 
         } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
-
+    
         // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCN-TMHJqEjJ2s-2AR3oWkRoXseWCiqeYk",
@@ -59,12 +59,12 @@
             appId: "1:521888020881:web:a2ff05a054b039b6740230",
             measurementId: "G-YEMTJV5R0T"
         };
-
+    
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app); // Initialize auth object
         const analytics = getAnalytics(app);
-
+    
         // Google Sign-In
         const googleSignInBtn = document.getElementById("google-signin-btn");
         googleSignInBtn.addEventListener("click", () => {
@@ -81,7 +81,7 @@
                     console.error("Google Sign-In Error:", error);
                 });
         });
-
+    
         // Check Auth State
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -93,13 +93,13 @@
                 console.log("User is signed out");
             }
         });
-
+    
         // Show To-Do Section After Login
         function showTodoSection() {
             document.getElementById("auth-buttons").classList.add("hidden");
             document.getElementById("todo-section").classList.remove("hidden");
         }
-
+    
         // VK Sign-In
         const vkSignInBtn = document.getElementById("vk-signin-btn");
         vkSignInBtn.addEventListener("click", () => {
