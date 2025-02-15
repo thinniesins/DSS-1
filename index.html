@@ -35,16 +35,6 @@
             <progress id="progress-bar" value="0" max="100"></progress>
         </div>
     </div>
-        <div id="todo-section" class="hidden">
-            <h2>Ваши задачи</h2>
-            <input type="text" id="task-input" placeholder="Отжаться 20 раз">
-            <button id="add-task-btn">Добавить задачу</button>
-            <ul id="task-list"></ul>
-            <div id="progress-section">
-                <h3>Прогресс: <span id="progress-percent">0%</span></h3>
-                <progress id="progress-bar" value="0" max="100"></progress>
-            </div>
-        </div>
     </main>
     <script src="script.js"></script>
     <script type="module">
@@ -66,6 +56,7 @@
       
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app); // Initialize auth object
         const analytics = getAnalytics(app);
 
         // Google Sign-In
