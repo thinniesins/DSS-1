@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>СЕП</title>
+    <title>Система Ежедневного превосходства</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,23 +13,23 @@
         <p>Превзойди себя вчерашнего</p>
     </header>
 
-  <!-- Settings Panel -->
-  <div id="settings-panel" class="hidden">
-    <div class="settings-content">
-        <h2>Настройки</h2>
-        <div id="account-photo">
-            <img src="user.png" alt="Account Photo" id="account-photo-img">
-            <input type="file" id="upload-photo" accept="image/*">
+    <!-- Settings Panel -->
+    <div id="settings-panel" class="hidden">
+        <div class="settings-content">
+            <h2>Настройки</h2>
+            <div id="account-photo">
+                <img src="user.png" alt="Account Photo" id="account-photo-img">
+                <input type="file" id="upload-photo" accept="image/*">
+            </div>
+            <div id="account-name">
+                <input type="text" id="name-input" placeholder="Ваше имя">
+            </div>
+            <div id="daily-reset-time">
+                <label for="reset-time">Время сброса:</label>
+                <input type="time" id="reset-time" value="00:00">
+            </div>
+            <button id="save-settings">Сохранить</button>
         </div>
-        <div id="account-name">
-            <input type="text" id="name-input" placeholder="Ваше имя">
-        </div>
-        <div id="daily-reset-time">
-            <label for="reset-time">Начало дня:</label>
-            <input type="time" id="reset-time" value="00:00">
-        </div>
-        <button id="save-settings">Сохранить</button>
-    </div>
     </div>
 
     <main>
@@ -57,9 +57,7 @@
                 </select>
                 <button id="add-task-btn">Добавить задачу</button>
             </div>
-            <ul id="task-list">
-                <!-- Tasks will be dynamically added here -->
-            </ul>
+            <ul id="task-list"></ul>
             <div id="progress-section">
                 <h3>Прогресс: <span id="progress-percent">0%</span></h3>
                 <progress id="progress-bar" value="0" max="100"></progress>
@@ -138,8 +136,8 @@
             window.location.href = vkAuthUrl; // Redirect to VK OAuth page
         });
 
-                // Add Task Functionality
-                const taskInput = document.getElementById("task-input");
+        // Add Task Functionality
+        const taskInput = document.getElementById("task-input");
         const addTaskBtn = document.getElementById("add-task-btn");
         const taskList = document.getElementById("task-list");
 
@@ -148,7 +146,33 @@
             const taskText = taskInput.value.trim();
             if (taskText !== "") {
                 const li = document.createElement("li");
-                li.textContent = taskText;
+
+                // Task text
+                const taskTextSpan = document.createElement("span");
+                taskTextSpan.textContent = taskText;
+                li.appendChild(taskTextSpan);
+
+                // Edit button
+                const editBtn = document.createElement("button");
+                editBtn.textContent = "✏️";
+                editBtn.addEventListener("click", () => {
+                    const newText = prompt("Редактировать задачу:", taskTextSpan.textContent);
+                    if (newText !== null && newText.trim() !== "") {
+                        taskTextSpan.textContent = newText.trim();
+                        updateProgress();
+                    }
+                });
+                li.appendChild(editBtn);
+
+                // Delete button
+                const deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "❌";
+                deleteBtn.addEventListener("click", () => {
+                    taskList.removeChild(li);
+                    updateProgress();
+                });
+                li.appendChild(deleteBtn);
+
                 taskList.appendChild(li);
                 taskInput.value = ""; // Clear the input field
                 updateProgress(); // Update progress
@@ -176,14 +200,22 @@
 
         // Mark task as completed
         taskList.addEventListener("click", (event) => {
-            if (event.target.tagName === "LI") {
-                event.target.classList.toggle("completed");
+            if (event.target.tagName === "SPAN") {
+                event.target.parentElement.classList.toggle("completed");
                 updateProgress();
             }
+        });
+
+        // Settings Button Functionality
+        const settingsBtn = document.getElementById("settings-btn");
+        const settingsPanel = document.getElementById("settings-panel");
+
+        settingsBtn.addEventListener("click", () => {
+            settingsPanel.classList.toggle("hidden");
         });
     </script>
 
     <!-- Script.js -->
     <script type="module" src="script.js"></script>
 </body>
-</html> 
+</html>
