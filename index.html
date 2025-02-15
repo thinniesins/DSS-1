@@ -1,47 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My To-Do List</title>
+    <title>Система Ежедневного превосходства</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>Welcome to My To-Do List</h1>
-        <p>Stay organized and track your daily progress!</p>
+        <h1>Система Ежедневного превосходства</h1>
+        <p>Превзойди себя вчерашнего</p>
     </header>
     <main>
         <div id="auth-buttons">
-            <button id="signup-btn">Sign Up</button>
-            <button id="login-btn">Log In</button>
+            <!-- VK Sign-In Button -->
+            <button id="vk-signin-btn">
+                <img src="https://img.icons8.com/color/16/000000/vk-com.png" alt="VK Logo">
+                Войти через VK
+            </button>
         </div>
         <div id="todo-section" class="hidden">
-            <h2>Your To-Do List</h2>
-            <input type="text" id="task-input" placeholder="Add a new task">
-            <button id="add-task-btn">Add Task</button>
+            <h2>Ваши задачи</h2>
+            <input type="text" id="task-input" placeholder="Отжаться 20 раз">
+            <button id="add-task-btn">Добавить задачу</button>
             <ul id="task-list"></ul>
             <div id="progress-section">
-                <h3>Progress: <span id="progress-percent">0%</span></h3>
+                <h3>Прогресс: <span id="progress-percent">0%</span></h3>
                 <progress id="progress-bar" value="0" max="100"></progress>
             </div>
         </div>
     </main>
     <script src="script.js"></script>
     <script type="module">
-        // Import the functions you need from the SDKs you need
+        // Import Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-      
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
+        // Firebase configuration
         const firebaseConfig = {
           apiKey: "AIzaSyCN-TMHJqEjJ2s-2AR3oWkRoXseWCiqeYk",
           authDomain: "dss-website-be534.firebaseapp.com",
           projectId: "dss-website-be534",
-          storageBucket: "dss-website-be534.firebasestorage.app",
+          storageBucket: "dss-website-be534.appspot.com",
           messagingSenderId: "521888020881",
           appId: "1:521888020881:web:a2ff05a054b039b6740230",
           measurementId: "G-YEMTJV5R0T"
@@ -50,6 +51,15 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
-      </script>
+
+        // VK Sign-In
+        const vkSignInBtn = document.getElementById("vk-signin-btn");
+        vkSignInBtn.addEventListener("click", () => {
+            const vkAppId = "53080924"; 
+            const redirectUri = encodeURIComponent("https://thinniesins.github.io/DSS-1/");
+            const vkAuthUrl = `https://oauth.vk.com/authorize?client_id=${vkAppId}&display=page&redirect_uri=${redirectUri}&response_type=code&v=5.131`;
+            window.location.href = vkAuthUrl; // Redirect to VK OAuth page
+        });
+    </script>
 </body>
 </html>

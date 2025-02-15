@@ -7,17 +7,6 @@ const taskList = document.getElementById("task-list");
 const progressPercent = document.getElementById("progress-percent");
 const progressBar = document.getElementById("progress-bar");
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-    apiKey: "AIzaSyCN-TMHJqEjJ2s-2AR3oWkRoXseWCiqeYk",
-    authDomain: "dss-website-be534.firebaseapp.com",
-    projectId: "dss-website-be534",
-    storageBucket: "dss-website-be534.firebasestorage.app",
-    messagingSenderId: "521888020881",
-    appId: "1:521888020881:web:a2ff05a054b039b6740230",
-    measurementId: "G-YEMTJV5R0T"
-  };
-
 let tasks = [];
 
 // Show To-Do Section After Login
@@ -64,6 +53,3 @@ function updateProgress() {
     progressPercent.textContent = `${progress.toFixed(0)}%`;
     progressBar.value = progress;
 }
-
-// Simulate Login
-document.getElementById("login-btn").addEventListener("click", showTodoSection);
