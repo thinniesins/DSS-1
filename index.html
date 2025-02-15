@@ -15,45 +15,51 @@
         <div id="auth-buttons">
             <!-- VK Sign-In Button -->
             <button id="vk-signin-btn">
-                <img src="https://img.icons8.com/color/16/000000/vk-com.png" alt="VK Logo">
+                <img src="https://img.icons8.com/color/16/000000/vk-com.png" alt="VK Logo - Sign in with VK">
                 Войти через VK
             </button>
+
+            <!-- Google Sign-In Button -->
+            <button id="google-signin-btn">
+                <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google Logo - Sign in with Google">
+                Войти через Google
+            </button>
         </div>
-        <!-- Google Sign-In Button -->
-        <button id="google-signin-btn">
-            <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google Logo">
-            Войти через Google
-        </button>
+
+        <div id="todo-section" class="hidden">
+            <h2>Ваши задачи</h2>
+            <input type="text" id="task-input" placeholder="Отжаться 20 раз">
+            <button id="add-task-btn">Добавить задачу</button>
+            <ul id="task-list"></ul>
+            <div id="progress-section">
+                <h3>Прогресс: <span id="progress-percent">0%</span></h3>
+                <progress id="progress-bar" value="0" max="100"></progress>
+            </div>
         </div>
-         <div id="todo-section" class="hidden">
-        <h2>Ваши задачи</h2>
-        <input type="text" id="task-input" placeholder="Отжаться 20 раз">
-        <button id="add-task-btn">Добавить задачу</button>
-        <ul id="task-list"></ul>
-        <div id="progress-section">
-            <h3>Прогресс: <span id="progress-percent">0%</span></h3>
-            <progress id="progress-bar" value="0" max="100"></progress>
-        </div>
-    </div>
     </main>
-    <script src="script.js"></script>
+
     <script type="module">
         // Import Firebase modules
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
+        import { 
+            initializeApp, 
+            getAuth, 
+            signInWithPopup, 
+            GoogleAuthProvider, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
 
         // Firebase configuration
         const firebaseConfig = {
-          apiKey: "AIzaSyCN-TMHJqEjJ2s-2AR3oWkRoXseWCiqeYk",
-          authDomain: "dss-website-be534.firebaseapp.com",
-          projectId: "dss-website-be534",
-          storageBucket: "dss-website-be534.appspot.com",
-          messagingSenderId: "521888020881",
-          appId: "1:521888020881:web:a2ff05a054b039b6740230",
-          measurementId: "G-YEMTJV5R0T"
+            apiKey: "AIzaSyCN-TMHJqEjJ2s-2AR3oWkRoXseWCiqeYk",
+            authDomain: "dss-website-be534.firebaseapp.com",
+            projectId: "dss-website-be534",
+            storageBucket: "dss-website-be534.appspot.com",
+            messagingSenderId: "521888020881",
+            appId: "1:521888020881:web:a2ff05a054b039b6740230",
+            measurementId: "G-YEMTJV5R0T"
         };
-      
+
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app); // Initialize auth object
@@ -98,7 +104,7 @@
         const vkSignInBtn = document.getElementById("vk-signin-btn");
         vkSignInBtn.addEventListener("click", () => {
             const vkAppId = "53080924"; 
-            const redirectUri = encodeURIComponent("https://thinniesins.github.io/DSS-1/");
+            const redirectUri = encodeURIComponent("https://your-actual-domain.com/"); // Update this
             const vkAuthUrl = `https://oauth.vk.com/authorize?client_id=${vkAppId}&display=page&redirect_uri=${redirectUri}&response_type=code&v=5.131`;
             window.location.href = vkAuthUrl; // Redirect to VK OAuth page
         });
@@ -106,6 +112,5 @@
 
     <!-- Your existing script.js -->
     <script src="script.js"></script>
-    
 </body>
 </html>
