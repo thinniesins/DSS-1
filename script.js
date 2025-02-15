@@ -113,6 +113,7 @@ function renderTasks() {
                     <option value="one-time" ${task.type === "one-time" ? "selected" : ""}>Однократно</option>
                     <option value="daily" ${task.type === "daily" ? "selected" : ""}>Ежедневно</option>
                 </select>
+                <button onclick="editTask(${index})">✏️</button>
                 <button onclick="deleteTask(${index})">🗑️</button>
                 <input type="checkbox" ${task.completed ? "checked" : ""} onchange="toggleTask(${index})">
             </div>
@@ -128,6 +129,15 @@ window.updateTaskType = function (index, newType) {
     tasks[index].type = newType;
     saveTasks(auth.currentUser.uid, tasks); // Save updated tasks
     renderTasks();
+};
+
+window.editTask = function (index) {
+    const newText = prompt("Редактировать задачу:", tasks[index].text);
+    if (newText !== null && newText.trim() !== "") {
+        tasks[index].text = newText.trim();
+        saveTasks(auth.currentUser.uid, tasks); // Save updated tasks
+        renderTasks();
+    }
 };
 
 // Toggle Task Completion
