@@ -96,14 +96,13 @@ async function loadSettings(userId) {
     }
     return {
         name: "",
-        photoUrl: "https://via.placeholder.com/100",
         resetTime: "00:00"
     };
 }
 
 // Render Tasks
 function renderTasks() {
-    taskList.innerHTML = "";
+    taskList.innerHTML = ""; // Clear the task list
     tasks.forEach((task, index) => {
         const li = document.createElement("li");
         li.innerHTML = `
@@ -202,10 +201,6 @@ function showTodoSection() {
 }
 
 // Settings Panel
-settingsBtn.addEventListener("click", () => {
-    settingsPanel.classList.toggle("visible");
-});
-
 settingsBtn.addEventListener("click", () => {
     settingsPanel.classList.toggle("visible");
 });
