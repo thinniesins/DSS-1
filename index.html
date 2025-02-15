@@ -19,6 +19,22 @@
                 Войти через VK
             </button>
         </div>
+        <!-- Google Sign-In Button -->
+        <button id="google-signin-btn">
+            <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google Logo">
+            Войти через Google
+        </button>
+        </div>
+         <div id="todo-section" class="hidden">
+        <h2>Ваши задачи</h2>
+        <input type="text" id="task-input" placeholder="Отжаться 20 раз">
+        <button id="add-task-btn">Добавить задачу</button>
+        <ul id="task-list"></ul>
+        <div id="progress-section">
+            <h3>Прогресс: <span id="progress-percent">0%</span></h3>
+            <progress id="progress-bar" value="0" max="100"></progress>
+        </div>
+    </div>
         <div id="todo-section" class="hidden">
             <h2>Ваши задачи</h2>
             <input type="text" id="task-input" placeholder="Отжаться 20 раз">
@@ -52,6 +68,41 @@
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
 
+        // Google Sign-In
+        const googleSignInBtn = document.getElementById("google-signin-btn");
+        googleSignInBtn.addEventListener("click", () => {
+            const provider = new GoogleAuthProvider();
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    // Signed in successfully
+                    const user = result.user;
+                    console.log("Google Sign-In Success:", user);
+                    showTodoSection(); // Show the to-do section after login
+                })
+                .catch((error) => {
+                    // Handle errors
+                    console.error("Google Sign-In Error:", error);
+                });
+        });
+
+        // Check Auth State
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in
+                console.log("User is signed in:", user);
+                showTodoSection(); // Show the to-do section
+            } else {
+                // User is signed out
+                console.log("User is signed out");
+            }
+        });
+
+        // Show To-Do Section After Login
+        function showTodoSection() {
+            document.getElementById("auth-buttons").classList.add("hidden");
+            document.getElementById("todo-section").classList.remove("hidden");
+        }
+
         // VK Sign-In
         const vkSignInBtn = document.getElementById("vk-signin-btn");
         vkSignInBtn.addEventListener("click", () => {
@@ -61,5 +112,9 @@
             window.location.href = vkAuthUrl; // Redirect to VK OAuth page
         });
     </script>
+
+    <!-- Your existing script.js -->
+    <script src="script.js"></script>
+    
 </body>
 </html>

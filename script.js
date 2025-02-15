@@ -45,6 +45,13 @@ window.toggleTask = function (index) {
     renderTasks();
 };
 
+// Listener on Enter
+taskInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+        addTaskBtn.click();
+    }
+});
+
 // Update Progress
 function updateProgress() {
     const totalTasks = tasks.length;
