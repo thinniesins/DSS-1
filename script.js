@@ -72,11 +72,15 @@ async function loadTasks(userId) {
     const userDocRef = doc(db, "users", userId);
     const userDoc = await getDoc(userDocRef);
     if (userDoc.exists()) {
-        return userDoc.data().tasks || [];
+        const tasks = userDoc.data().tasks || [];
+        // Ensure all tasks have a type property
+        return tasks.map(task => ({
+            ...task,
+            type: task.type || "one-time" // Default to "one-time" if type is missing
+        }));
     }
     return [];
 }
-
 // Save Settings to Firestore
 async function saveSettings(userId, settings) {
     const userDocRef = doc(db, "users", userId);
@@ -156,7 +160,7 @@ window.editTask = function (index) {
 addTaskBtn.addEventListener("click", async () => {
     const taskText = taskInput.value.trim();
     if (taskText) {
-        tasks.push({ text: taskText, completed: false, type: "one-time" });
+        tasks.push({ text: taskText, completed: false, type: "one-time" }); // Ensure type is included
         taskInput.value = "";
         await saveTasks(auth.currentUser.uid, tasks); // Save new task
         renderTasks();
