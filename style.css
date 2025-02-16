@@ -129,7 +129,7 @@ header {
     background-color: #e53935;
 }
 
-.save-btn {
+.save-settings {
     margin-top: 20px;
     padding: 10px 20px;
     background-color: #3ffa39;
@@ -141,7 +141,7 @@ header {
     transition: background-color 0.3s ease;
 }
 
-save-btn:hover {
+.save-settings:hover {
     background-color: #3ae434;
 }
 
