@@ -379,7 +379,12 @@ onAuthStateChanged(auth, async (user) => {
         renderTasks();
         showTodoSection();
 
-        // Check if it's a new day before recommending a task
+        // Show and activate the settings button after login
+        const settingsBtn = document.getElementById("settings-btn");
+        settingsBtn.classList.add("active"); // Make the button visible
+        settingsBtn.disabled = false; // Enable the button
+
+        // Check if it's a new day and recommend a task ONLY AFTER LOGIN
         if (isNewDay()) {
             recommendTask();
         }
@@ -388,6 +393,12 @@ onAuthStateChanged(auth, async (user) => {
         // Hide the to-do section and show the login buttons
         authButtons.classList.remove("hidden");
         todoSection.classList.add("hidden");
+
+        // Hide and deactivate the settings button
+        const settingsBtn = document.getElementById("settings-btn");
+        settingsBtn.classList.remove("active"); // Hide the button
+        settingsBtn.disabled = true; // Disable the button
+
         // Clear tasks
         tasks = [];
         renderTasks();
@@ -404,7 +415,7 @@ onAuthStateChanged(auth, async (user) => {
 
 function isNewDay() {
     const lastSuggestionDate = localStorage.getItem("lastSuggestionDate");
-    const today = new Date().toDateString();
+    const today = new Date().toDateString(); // Get today's date as a string
 
     // If there's no last suggestion date or it's a new day, return true
     return !lastSuggestionDate || lastSuggestionDate !== today;
@@ -418,7 +429,7 @@ if (isNewDay()) {
 function recommendTask() {
     // Get the last suggestion date from localStorage
     const lastSuggestionDate = localStorage.getItem("lastSuggestionDate");
-    const today = new Date().toDateString(); // Get today's date as a string
+    const today = new Date().toDateString();
 
     // Check if a task was already suggested today
     if (lastSuggestionDate === today) {

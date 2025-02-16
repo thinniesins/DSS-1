@@ -11,6 +11,7 @@ header {
     padding: 20px;
     text-align: center;
 }
+
 #settings-btn {
     position: absolute;
     left: 10px;
@@ -20,6 +21,11 @@ header {
     color: white;
     font-size: 24px;
     cursor: pointer;
+    display: none; /* Hide the button by default */
+}
+
+#settings-btn.active {
+    display: block; /* Show the button when it has the "active" class */
 }
 
 #close-settings-btn {
@@ -61,11 +67,23 @@ header {
     padding: 20px;
 }
 
+#account-photo {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center horizontally */
+    justify-content: center; /* Center vertically */
+    margin-bottom: 20px; /* Add some spacing below the photo */
+}
+
 #account-photo img {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    margin-bottom: 10px;
+    margin-bottom: 10px; /* Space between the image and the upload button */
+}
+
+#upload-photo {
+    text-align: center; /* Center the upload button text */
 }
 
 #task-options {
@@ -142,7 +160,7 @@ header {
 }
 
 .save-settings:hover {
-    background-color: #3ae434;
+    background-color: #3ae434;;
 }
 
 .modal-overlay {
