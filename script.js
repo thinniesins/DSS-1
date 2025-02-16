@@ -36,11 +36,11 @@ const firebaseConfig = {
     apiKey: "AIzaSyCN-TMHJqEjJ2s-2AR3oWkRoXseWCiqeYk",
     authDomain: "dss-website-be534.firebaseapp.com",
     projectId: "dss-website-be534",
-    storageBucket: "dss-website-be534.appspot.com",
+    storageBucket: "dss-website-be534.firebasestorage.app",
     messagingSenderId: "521888020881",
     appId: "1:521888020881:web:a2ff05a054b039b6740230",
     measurementId: "G-YEMTJV5R0T"
-};
+  };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
