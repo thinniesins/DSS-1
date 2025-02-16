@@ -24,18 +24,23 @@ import {
     GoogleAuthProvider, 
     onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
-import { 
-    getFirestore, 
-    doc, 
-    setDoc, 
-    getDoc, 
-    onSnapshot 
-} from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
 
+const firebaseConfig = {
+    apiKey: "AIzaSyCN-TMHJqEjJ2s-2AR3oWkRoXseWCiqeYk",
+    authDomain: "dss-website-be534.firebaseapp.com",
+    projectId: "dss-website-be534",
+    storageBucket: "dss-website-be534.appspot.com",
+    messagingSenderId: "521888020881",
+    appId: "1:521888020881:web:a2ff05a054b039b6740230",
+    measurementId: "G-YEMTJV5R0T"
+};
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const analytics = getAnalytics(app);
 
 // Google Sign-In
 const googleSignInBtn = document.getElementById("google-signin-btn");
@@ -52,11 +57,20 @@ googleSignInBtn.addEventListener("click", () => {
         });
 });
 
+// VK Sign-In
+const vkSignInBtn = document.getElementById("vk-signin-btn");
+vkSignInBtn.addEventListener("click", () => {
+    const vkAppId = "53080924"; 
+    const redirectUri = encodeURIComponent("https://your-actual-domain.com/"); // Update this
+    const vkAuthUrl = `https://oauth.vk.com/authorize?client_id=${vkAppId}&display=page&redirect_uri=${redirectUri}&response_type=code&v=5.131`;
+    window.location.href = vkAuthUrl; // Redirect to VK OAuth page
+});
+
 // Save Tasks to Firestore
 async function saveTasks(userId, tasks) {
     const userDocRef = doc(db, "users", userId);
     await setDoc(userDocRef, { tasks: tasks }, { merge: true });
-    console.log("Tasks saved:", tasks); // Debugging
+    console.log("Tasks saved:", tasks);
 }
 
 // Load Tasks from Firestore
@@ -64,11 +78,11 @@ async function loadTasks(userId) {
     const userDocRef = doc(db, "users", userId);
     const userDoc = await getDoc(userDocRef);
     if (userDoc.exists()) {
-        const tasks = userDoc.data().tasks || []; // Load tasks from Firestore
-        console.log("Tasks loaded:", tasks); // Debugging
+        const tasks = userDoc.data().tasks || [];
+        console.log("Tasks loaded:", tasks);
         return tasks;
     }
-    return []; // Return empty array if no tasks exist
+    return [];
 }
 
 // Save Settings to Firestore
@@ -92,7 +106,7 @@ async function loadSettings(userId) {
 
 // Render Tasks
 function renderTasks() {
-    taskList.innerHTML = ""; // Clear the task list
+    taskList.innerHTML = "";
     tasks.forEach((task, index) => {
         const li = document.createElement("li");
         li.innerHTML = `
@@ -115,43 +129,34 @@ function renderTasks() {
 
 // Update Task Type
 window.updateTaskType = function (index, newType) {
-    tasks[index].type = newType; // Update task type
-    saveTasks(auth.currentUser.uid, tasks); // Save updated tasks to Firestore
-    renderTasks(); // Render the updated task list
-};
-
-window.editTask = function (index) {
-    const newText = prompt("Редактировать задачу:", tasks[index].text);
-    if (newText !== null && newText.trim() !== "") {
-        tasks[index].text = newText.trim();
-        saveTasks(auth.currentUser.uid, tasks); // Save updated tasks
-        renderTasks();
-    }
-};
-
-// Toggle Task Completion
-window.toggleTask = function (index) {
-    tasks[index].completed = !tasks[index].completed; // Toggle completion status
-    saveTasks(auth.currentUser.uid, tasks); // Save updated tasks to Firestore
-    renderTasks(); // Render the updated task list
-};
-
-// Delete Task
-window.deleteTask = function (index) {
-    if (confirm("Вы уверены, что хотите удалить задачу?")) {
-        tasks.splice(index, 1); // Remove the task
-        saveTasks(auth.currentUser.uid, tasks); // Save updated tasks to Firestore
-        renderTasks(); // Render the updated task list
-    }
+    tasks[index].type = newType;
+    saveTasks(auth.currentUser.uid, tasks);
+    renderTasks();
 };
 
 // Edit Task
 window.editTask = function (index) {
     const newText = prompt("Редактировать задачу:", tasks[index].text);
     if (newText !== null && newText.trim() !== "") {
-        tasks[index].text = newText.trim(); // Update task text
-        saveTasks(auth.currentUser.uid, tasks); // Save updated tasks to Firestore
-        renderTasks(); // Render the updated task list
+        tasks[index].text = newText.trim();
+        saveTasks(auth.currentUser.uid, tasks);
+        renderTasks();
+    }
+};
+
+// Toggle Task Completion
+window.toggleTask = function (index) {
+    tasks[index].completed = !tasks[index].completed;
+    saveTasks(auth.currentUser.uid, tasks);
+    renderTasks();
+};
+
+// Delete Task
+window.deleteTask = function (index) {
+    if (confirm("Вы уверены, что хотите удалить задачу?")) {
+        tasks.splice(index, 1);
+        saveTasks(auth.currentUser.uid, tasks);
+        renderTasks();
     }
 };
 
@@ -159,16 +164,10 @@ window.editTask = function (index) {
 addTaskBtn.addEventListener("click", async () => {
     const taskText = taskInput.value.trim();
     if (taskText) {
-        tasks.push({ text: taskText, completed: false, type: "one-time" }); // Add new task
-        taskInput.value = ""; // Clear the input field
-        await saveTasks(auth.currentUser.uid, tasks); // Save tasks to Firestore
-        renderTasks(); // Render the updated task list
-    }
-});
-
-window.addEventListener("beforeunload", async () => {
-    if (auth.currentUser) {
+        tasks.push({ text: taskText, completed: false, type: "one-time" });
+        taskInput.value = "";
         await saveTasks(auth.currentUser.uid, tasks);
+        renderTasks();
     }
 });
 
@@ -186,7 +185,7 @@ function dailyReset() {
     tasks.forEach(task => {
         if (task.type === "daily") task.completed = false;
     });
-    saveTasks(auth.currentUser.uid, tasks); // Save updated tasks
+    saveTasks(auth.currentUser.uid, tasks);
     renderTasks();
 }
 
@@ -228,25 +227,25 @@ uploadPhotoInput.addEventListener("change", (event) => {
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         console.log("User is signed in:", user);
-        tasks = await loadTasks(user.uid); // Load tasks for the logged-in user
-        const settings = await loadSettings(user.uid); // Load settings for the logged-in user
-        nameInput.value = settings.name || ""; // Default to empty if no name
-        accountPhotoImg.src = settings.photoUrl || "user.png"; // Default image if no photo
-        resetTimeInput.value = settings.resetTime || "00:00"; // Default reset time
-        renderTasks(); // Render tasks after loading
-        showTodoSection(); // Show the to-do section
+        tasks = await loadTasks(user.uid);
+        const settings = await loadSettings(user.uid);
+        nameInput.value = settings.name || "";
+        accountPhotoImg.src = settings.photoUrl || "user.png";
+        resetTimeInput.value = settings.resetTime || "00:00";
+        renderTasks();
+        showTodoSection();
 
-        // Real-Time Updates (optional)
+        // Real-Time Updates
         const userDocRef = doc(db, "users", user.uid);
         onSnapshot(userDocRef, (doc) => {
             if (doc.exists()) {
-                tasks = doc.data().tasks || []; // Update tasks in real-time
+                tasks = doc.data().tasks || [];
                 renderTasks();
             }
         });
     } else {
         console.log("User is signed out");
-        tasks = []; // Clear tasks when the user logs out
+        tasks = [];
         renderTasks();
     }
 });
