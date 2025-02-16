@@ -106,11 +106,11 @@ async function loadSettings(userId) {
 
 // Render Tasks
 function renderTasks() {
-    taskList.innerHTML = "";
+    taskList.innerHTML = ""; // Clear the task list
     tasks.forEach((task, index) => {
         const li = document.createElement("li");
         li.innerHTML = `
-            <span>${task.text}</span>
+            <span>${task.text} (${task.type === "daily" ? "Ежедневно" : "Однократно"})</span>
             <div class="task-actions">
                 <select onchange="updateTaskType(${index}, this.value)">
                     <option value="one-time" ${task.type === "one-time" ? "selected" : ""}>Однократно</option>
@@ -171,6 +171,21 @@ addTaskBtn.addEventListener("click", async () => {
     }
 });
 
+taskInput.addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+        addTask();
+    }
+});
+
+taskList.addEventListener("click", (event) => {
+    if (event.target.tagName === "SPAN") {
+        const taskIndex = Array.from(taskList.children).indexOf(event.target.parentElement);
+        tasks[taskIndex].completed = !tasks[taskIndex].completed; // Toggle completion status
+        saveTasks(auth.currentUser.uid, tasks); // Save updated tasks
+        renderTasks(); // Re-render tasks
+    }
+});
+
 // Update Progress
 function updateProgress() {
     const totalTasks = tasks.length;
@@ -197,7 +212,13 @@ function showTodoSection() {
 
 // Settings Panel
 settingsBtn.addEventListener("click", () => {
-    settingsPanel.classList.toggle("visible");
+    settingsPanel.classList.toggle("hidden"); // Toggle the "hidden" class
+});
+
+// Close settings panel
+const closeSettingsBtn = document.getElementById("close-settings-btn");
+closeSettingsBtn.addEventListener("click", () => {
+    settingsPanel.classList.add("hidden"); // Hide the settings panel
 });
 
 // Save Settings
