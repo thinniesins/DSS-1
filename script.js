@@ -13,6 +13,7 @@ const nameInput = document.getElementById("name-input");
 const resetTimeInput = document.getElementById("reset-time");
 const uploadPhotoInput = document.getElementById("upload-photo");
 const accountPhotoImg = document.getElementById("account-photo-img");
+const taskTypeSelect = document.getElementById("task-type"); // Add this
 
 let tasks = [];
 
@@ -164,19 +165,29 @@ window.deleteTask = function (index) {
 addTaskBtn.addEventListener("click", async () => {
     const taskText = taskInput.value.trim();
     if (taskText) {
-        tasks.push({ text: taskText, completed: false, type: "one-time" });
+        const taskType = taskTypeSelect.value; // Get the selected task type
+        tasks.push({ text: taskText, completed: false, type: taskType }); // Use the selected type
         taskInput.value = "";
         await saveTasks(auth.currentUser.uid, tasks);
         renderTasks();
     }
 });
 
+// Add Task on Enter
 taskInput.addEventListener("keypress", (event) => {
     if (event.key === "Enter") {
-        addTask();
+        const taskText = taskInput.value.trim();
+        if (taskText) {
+            const taskType = taskTypeSelect.value; // Get the selected task type
+            tasks.push({ text: taskText, completed: false, type: taskType }); // Use the selected type
+            taskInput.value = "";
+            saveTasks(auth.currentUser.uid, tasks);
+            renderTasks();
+        }
     }
 });
 
+// Toggle Task Completion on Click
 taskList.addEventListener("click", (event) => {
     if (event.target.tagName === "SPAN") {
         const taskIndex = Array.from(taskList.children).indexOf(event.target.parentElement);
