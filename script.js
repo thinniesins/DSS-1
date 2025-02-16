@@ -65,6 +65,7 @@ googleSignInBtn.addEventListener("click", () => {
 async function saveTasks(userId, tasks) {
     const userDocRef = doc(db, "users", userId);
     await setDoc(userDocRef, { tasks: tasks }, { merge: true });
+    console.log("Tasks saved:", tasks); // Debugging
 }
 
 // Load Tasks from Firestore
@@ -72,14 +73,13 @@ async function loadTasks(userId) {
     const userDocRef = doc(db, "users", userId);
     const userDoc = await getDoc(userDocRef);
     if (userDoc.exists()) {
-        const tasks = userDoc.data().tasks || [];
-        return tasks.map(task => ({
-            ...task,
-            type: task.type || "one-time" // Default to "one-time" if type is missing
-        }));
+        const tasks = userDoc.data().tasks || []; // Load tasks from Firestore
+        console.log("Tasks loaded:", tasks); // Debugging
+        return tasks;
     }
-    return [];
+    return []; // Return empty array if no tasks exist
 }
+
 // Save Settings to Firestore
 async function saveSettings(userId, settings) {
     const userDocRef = doc(db, "users", userId);
@@ -124,9 +124,9 @@ function renderTasks() {
 
 // Update Task Type
 window.updateTaskType = function (index, newType) {
-    tasks[index].type = newType;
-    saveTasks(auth.currentUser.uid, tasks); // Save updated tasks
-    renderTasks();
+    tasks[index].type = newType; // Update task type
+    saveTasks(auth.currentUser.uid, tasks); // Save updated tasks to Firestore
+    renderTasks(); // Render the updated task list
 };
 
 window.editTask = function (index) {
@@ -140,27 +140,27 @@ window.editTask = function (index) {
 
 // Toggle Task Completion
 window.toggleTask = function (index) {
-    tasks[index].completed = !tasks[index].completed;
-    saveTasks(auth.currentUser.uid, tasks); // Save updated tasks
-    renderTasks();
+    tasks[index].completed = !tasks[index].completed; // Toggle completion status
+    saveTasks(auth.currentUser.uid, tasks); // Save updated tasks to Firestore
+    renderTasks(); // Render the updated task list
 };
 
 // Delete Task
 window.deleteTask = function (index) {
     if (confirm("Вы уверены, что хотите удалить задачу?")) {
-        tasks.splice(index, 1);
-        saveTasks(auth.currentUser.uid, tasks); // Save updated tasks
-        renderTasks();
+        tasks.splice(index, 1); // Remove the task
+        saveTasks(auth.currentUser.uid, tasks); // Save updated tasks to Firestore
+        renderTasks(); // Render the updated task list
     }
 };
 
 // Edit Task
 window.editTask = function (index) {
-    const newType = prompt("Изменить тип задачи (daily/one-time):", tasks[index].type);
-    if (newType === "daily" || newType === "one-time") {
-        tasks[index].type = newType;
-        saveTasks(auth.currentUser.uid, tasks); // Save updated tasks
-        renderTasks();
+    const newText = prompt("Редактировать задачу:", tasks[index].text);
+    if (newText !== null && newText.trim() !== "") {
+        tasks[index].text = newText.trim(); // Update task text
+        saveTasks(auth.currentUser.uid, tasks); // Save updated tasks to Firestore
+        renderTasks(); // Render the updated task list
     }
 };
 
@@ -168,10 +168,10 @@ window.editTask = function (index) {
 addTaskBtn.addEventListener("click", async () => {
     const taskText = taskInput.value.trim();
     if (taskText) {
-        tasks.push({ text: taskText, completed: false, type: "one-time" }); // Ensure type is included
-        taskInput.value = "";
-        await saveTasks(auth.currentUser.uid, tasks); // Save new task
-        renderTasks();
+        tasks.push({ text: taskText, completed: false, type: "one-time" }); // Add new task
+        taskInput.value = ""; // Clear the input field
+        await saveTasks(auth.currentUser.uid, tasks); // Save tasks to Firestore
+        renderTasks(); // Render the updated task list
     }
 });
 
@@ -239,17 +239,17 @@ onAuthStateChanged(auth, async (user) => {
         console.log("User is signed in:", user);
         tasks = await loadTasks(user.uid); // Load tasks for the logged-in user
         const settings = await loadSettings(user.uid); // Load settings for the logged-in user
-        nameInput.value = settings.name;
+        nameInput.value = settings.name || ""; // Default to empty if no name
         accountPhotoImg.src = settings.photoUrl || "user.png"; // Default image if no photo
         resetTimeInput.value = settings.resetTime || "00:00"; // Default reset time
-        renderTasks();
-        showTodoSection();
+        renderTasks(); // Render tasks after loading
+        showTodoSection(); // Show the to-do section
 
         // Real-Time Updates (optional)
         const userDocRef = doc(db, "users", user.uid);
         onSnapshot(userDocRef, (doc) => {
             if (doc.exists()) {
-                tasks = doc.data().tasks || [];
+                tasks = doc.data().tasks || []; // Update tasks in real-time
                 renderTasks();
             }
         });
