@@ -73,7 +73,6 @@ async function loadTasks(userId) {
     const userDoc = await getDoc(userDocRef);
     if (userDoc.exists()) {
         const tasks = userDoc.data().tasks || [];
-        // Ensure all tasks have a type property
         return tasks.map(task => ({
             ...task,
             type: task.type || "one-time" // Default to "one-time" if type is missing
@@ -176,6 +175,12 @@ addTaskBtn.addEventListener("click", async () => {
     }
 });
 
+window.addEventListener("beforeunload", async () => {
+    if (auth.currentUser) {
+        await saveTasks(auth.currentUser.uid, tasks);
+    }
+});
+
 // Update Progress
 function updateProgress() {
     const totalTasks = tasks.length;
@@ -203,11 +208,6 @@ function showTodoSection() {
 // Settings Panel
 settingsBtn.addEventListener("click", () => {
     settingsPanel.classList.toggle("visible");
-});
-
-const closeSettingsBtn = document.getElementById("close-settings-btn");
-closeSettingsBtn.addEventListener("click", () => {
-    settingsPanel.classList.remove("visible");
 });
 
 // Save Settings
@@ -240,8 +240,8 @@ onAuthStateChanged(auth, async (user) => {
         tasks = await loadTasks(user.uid); // Load tasks for the logged-in user
         const settings = await loadSettings(user.uid); // Load settings for the logged-in user
         nameInput.value = settings.name;
-        accountPhotoImg.src = settings.photoUrl;
-        resetTimeInput.value = settings.resetTime;
+        accountPhotoImg.src = settings.photoUrl || "user.png"; // Default image if no photo
+        resetTimeInput.value = settings.resetTime || "00:00"; // Default reset time
         renderTasks();
         showTodoSection();
 

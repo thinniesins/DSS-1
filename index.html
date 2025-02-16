@@ -34,6 +34,8 @@
     </div>
 
     <main>
+        <br>
+        <br>
         <div id="auth-buttons">
             <!-- VK Sign-In Button -->
             <button id="vk-signin-btn">
@@ -210,6 +212,12 @@
         // Settings Button Functionality
         const settingsBtn = document.getElementById("settings-btn");
         const settingsPanel = document.getElementById("settings-panel");
+
+        //Close  the panel
+        const closeSettingsBtn = document.getElementById("close-settings-btn");
+        closeSettingsBtn.addEventListener("click", () => {
+        settingsPanel.classList.remove("visible");
+        });
 
         settingsBtn.addEventListener("click", () => {
             settingsPanel.classList.toggle("hidden");
