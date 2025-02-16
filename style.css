@@ -38,24 +38,23 @@ header {
 }
 
 #settings-panel {
-    display: block;
     position: fixed;
-    left: -33%;
+    left: -33%; /* Initially off-screen */
     top: 0;
     width: 33%;
     height: 100%;
     background-color: #fff;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    transition: left 0.3s ease;
+    transition: left 0.3s ease; /* Smooth transition */
     z-index: 1000;
 }
 
 #settings-panel.hidden {
-    left: -33%;
+    left: -33%; /* Keep off-screen when hidden */
 }
 
 #settings-panel:not(.hidden) {
-    left: 0;
+    left: 0; /* Bring on-screen when not hidden */
 }
 
 .settings-content {
@@ -128,6 +127,22 @@ header {
 
 .log-out-btn:hover {
     background-color: #e53935;
+}
+
+.save-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #3ffa39;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+save-btn:hover {
+    background-color: #3ae434;
 }
 
 .modal-overlay {
