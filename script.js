@@ -115,10 +115,15 @@ import {
     getAuth, 
     signInWithPopup, 
     GoogleAuthProvider, 
-    onAuthStateChanged 
+    onAuthStateChanged,
+    setPersistence,
+    browserSessionPersistence,
+    browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-analytics.js";
+// Import Firebase signOut function
+import { signOut } from "https://www.gstatic.com/firebasejs/11.3.1/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyCN-TMHJqEjJ2s-2AR3oWkRoXseWCiqeYk",
@@ -130,10 +135,24 @@ const firebaseConfig = {
     measurementId: "G-YEMTJV5R0T"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const analytics = getAnalytics(app);
+
+// Set persistence based on platform
+if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    // Mobile device: use session persistence
+    setPersistence(auth, browserSessionPersistence)
+        .then(() => console.log("Session persistence set for mobile devices"))
+        .catch((error) => console.error("Error setting persistence:", error));
+} else {
+    // Desktop: use local persistence
+    setPersistence(auth, browserLocalPersistence)
+        .then(() => console.log("Local persistence set for desktop devices"))
+        .catch((error) => console.error("Error setting persistence:", error));
+}
 
 // Google Sign-In
 const googleSignInBtn = document.getElementById("google-signin-btn");
@@ -359,16 +378,16 @@ onAuthStateChanged(auth, async (user) => {
         renderTasks();
         showTodoSection();
 
-        // Real-Time Updates
-        const userDocRef = doc(db, "users", user.uid );
-        onSnapshot(userDocRef, (doc) => {
-            if (doc.exists()) {
-                tasks = doc.data().tasks || [];
-                renderTasks();
-            }
-        });
+        // Check if it's a new day before recommending a task
+        if (isNewDay()) {
+            recommendTask();
+        }
     } else {
         console.log("User is signed out");
+        // Hide the to-do section and show the login buttons
+        authButtons.classList.remove("hidden");
+        todoSection.classList.add("hidden");
+        // Clear tasks
         tasks = [];
         renderTasks();
     }
@@ -382,7 +401,30 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
+function isNewDay() {
+    const lastSuggestionDate = localStorage.getItem("lastSuggestionDate");
+    const today = new Date().toDateString();
+
+    // If there's no last suggestion date or it's a new day, return true
+    return !lastSuggestionDate || lastSuggestionDate !== today;
+}
+
+// Call this function before recommending a task
+if (isNewDay()) {
+    recommendTask();
+}
+
 function recommendTask() {
+    // Get the last suggestion date from localStorage
+    const lastSuggestionDate = localStorage.getItem("lastSuggestionDate");
+    const today = new Date().toDateString(); // Get today's date as a string
+
+    // Check if a task was already suggested today
+    if (lastSuggestionDate === today) {
+        console.log("Task already suggested today.");
+        return;
+    }
+
     // Filter out tasks that have already been suggested
     const availableTasks = allTasks.filter(task => !suggestedTasks.includes(task));
 
@@ -392,12 +434,35 @@ function recommendTask() {
 
         // Show recommendation modal
         showRecommendationModal(randomTask);
+
+        // Update the last suggestion date in localStorage
+        localStorage.setItem("lastSuggestionDate", today);
     } else {
         alert("Все задачи были предложены!");
     }
 }
 
-function showRecommendationModal(task) {
+// Log Out Button
+const logOutBtn = document.getElementById("log-out-btn");
+
+logOutBtn.addEventListener("click", () => {
+    signOut(auth)
+        .then(() => {
+            console.log("User signed out successfully");
+            // Hide the to-do section and show the login buttons
+            authButtons.classList.remove("hidden");
+            todoSection.classList.add("hidden");
+            // Clear tasks
+            tasks = [];
+            renderTasks();
+            // Close the settings panel
+            settingsPanel.classList.add("hidden");
+        })
+        .catch((error) => {
+            console.error("Error signing out:", error);
+        });
+});
+    function showRecommendationModal(task) {
     // Create modal overlay
     const modalOverlay = document.createElement("div");
     modalOverlay.className = "modal-overlay";
