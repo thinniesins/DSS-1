@@ -334,7 +334,8 @@ function showTodoSection() {
 
 // Settings Panel
 settingsBtn.addEventListener("click", () => {
-    settingsPanel.classList.toggle("hidden"); // Toggle the "hidden" class
+    console.log("Settings button clicked!");
+    settingsPanel.classList.toggle("hidden");
 });
 
 // Close settings panel
